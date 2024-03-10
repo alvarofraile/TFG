@@ -25,6 +25,9 @@ public class Unit : MonoBehaviour
     {
         unitHealth = GetComponent<UnitHealth>();
         baseActions = GetComponents<BaseAction>();
+
+        tilePosition = LevelGrid.Instance.GetTilePosition(transform.position);
+        LevelGrid.Instance.AddUnitToTilePosition(tilePosition, this);
     }
 
     private UnitHealth GetHealth()
@@ -34,9 +37,6 @@ public class Unit : MonoBehaviour
 
     void Start()
     {
-        tilePosition = LevelGrid.Instance.GetTilePosition(transform.position);
-        LevelGrid.Instance.AddUnitToTilePosition(tilePosition, this);
-
         unitHealth.OnDead += UnitHealt_OnDead;
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);

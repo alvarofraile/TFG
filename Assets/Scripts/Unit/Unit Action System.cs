@@ -85,7 +85,7 @@ public class UnitActionSystem : MonoBehaviour
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private void SetSelectedAction(BaseAction action)
+    public void SetSelectedAction(BaseAction action)
     {
         selectedAction = action;
 
@@ -132,16 +132,17 @@ public class UnitActionSystem : MonoBehaviour
 
     private void HandleSelectedAction()
     {
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
-            TilePosition mouseTilePosition = LevelGrid.Instance.GetTilePosition(Input.mousePosition);
+            TilePosition mouseTilePosition = LevelGrid.Instance.GetTilePosition(MouseWorldPosition.GetPosition());
 
             if (!selectedAction.IsValidTilePosition(mouseTilePosition))
             {
                 return;
             }
 
-            if(!selectedUnit.TryUseActionPointsToTakeAction(selectedAction))
+
+            if (!selectedUnit.TryUseActionPointsToTakeAction(selectedAction))
             {
                 return;
             }

@@ -12,9 +12,5 @@ public class Testing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        { 
-            GridSystemVisualization.Instance.ShowRange(new TilePosition(2, 2), 2, GridSystemVisualization.TileVisualType.Green);   
-        }
     }
 }

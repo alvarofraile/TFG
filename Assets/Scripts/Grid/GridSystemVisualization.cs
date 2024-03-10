@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.PlasticSCM.Editor.WebApi;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using static GridSystemVisualization;
@@ -80,7 +81,9 @@ public class GridSystemVisualization : MonoBehaviour
         switch(selectedAction)
         {
             //TODO: Añadir todas las acciones
-
+            case (MoveAction):
+                tileVisualType = TileVisualType.White;
+                break;
             default:
                 tileVisualType = TileVisualType.White;
                 break;

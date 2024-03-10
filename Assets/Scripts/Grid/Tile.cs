@@ -13,6 +13,7 @@ public class Tile
     {
         this.gridSystem = gridSystem;
         this.tilePosition = tilePosition;
+        units= new List<Unit>();
     }
 
     public override string ToString()

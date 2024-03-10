@@ -14,7 +14,7 @@ public class UnitHealth : MonoBehaviour
 
     void Awake()
     {
-        maxHealth = health;
+        health = maxHealth;
     }
 
     public void Damage(int amount)
