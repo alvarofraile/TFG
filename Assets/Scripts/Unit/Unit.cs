@@ -38,6 +38,7 @@ public class Unit : MonoBehaviour
     void Start()
     {
         unitHealth.OnDead += UnitHealt_OnDead;
+        actionPoints = maxActionPoints;
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
     }

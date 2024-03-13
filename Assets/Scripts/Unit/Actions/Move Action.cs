@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MoveAction : BaseAction
 {
+    //TODO -> Para las animaciones
     public event EventHandler OnStartMoving;
     public event EventHandler OnStopMoving;
 

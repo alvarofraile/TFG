@@ -19,7 +19,8 @@ public class GridSystemVisualization : MonoBehaviour
         White,
         Blue,
         Red,
-        Green
+        Green,
+        LightRed
     }
 
     [Serializable]
@@ -81,8 +82,12 @@ public class GridSystemVisualization : MonoBehaviour
         switch(selectedAction)
         {
             //TODO: Añadir todas las acciones
-            case (MoveAction):
+            case (MoveAction moveAction):
                 tileVisualType = TileVisualType.White;
+                break;
+            case (ShootAction shootAction):
+                tileVisualType = TileVisualType.Red;
+                ShowRange(unit.GetTilePosition(), shootAction.GetMaxShootingDistance(), TileVisualType.LightRed);
                 break;
             default:
                 tileVisualType = TileVisualType.White;
@@ -119,8 +124,8 @@ public class GridSystemVisualization : MonoBehaviour
                     continue;
                 }
 
-                int dist = Mathf.Abs(x) + Mathf.Abs(z);
-                if(dist > range)
+                float distance = new Vector2(Math.Abs(x), Math.Abs(z)).magnitude;
+                if (distance > range)
                 {
                     continue;
                 }

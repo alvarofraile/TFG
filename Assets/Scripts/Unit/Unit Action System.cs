@@ -134,13 +134,13 @@ public class UnitActionSystem : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+
             TilePosition mouseTilePosition = LevelGrid.Instance.GetTilePosition(MouseWorldPosition.GetPosition());
 
             if (!selectedAction.IsValidTilePosition(mouseTilePosition))
             {
                 return;
             }
-
 
             if (!selectedUnit.TryUseActionPointsToTakeAction(selectedAction))
             {
