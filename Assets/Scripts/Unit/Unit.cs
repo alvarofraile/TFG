@@ -28,6 +28,8 @@ public class Unit : MonoBehaviour
 
         tilePosition = LevelGrid.Instance.GetTilePosition(transform.position);
         LevelGrid.Instance.AddUnitToTilePosition(tilePosition, this);
+
+        actionPoints = maxActionPoints;
     }
 
     private UnitHealth GetHealth()
@@ -38,7 +40,6 @@ public class Unit : MonoBehaviour
     void Start()
     {
         unitHealth.OnDead += UnitHealt_OnDead;
-        actionPoints = maxActionPoints;
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
     }
@@ -137,6 +138,7 @@ public class Unit : MonoBehaviour
 
     private void UnitHealt_OnDead(object sender, EventArgs e)
     {
+        //TODO -> Muerte
         throw new NotImplementedException();
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ShootAction : BaseAction
 {
-    //TODO -> Para las animaciones
     public event EventHandler<OnShootEventArgs> OnShoot;
     public static event EventHandler<OnShootEventArgs> OnAnyShoot;
 

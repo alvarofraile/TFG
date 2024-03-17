@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MoveAction : BaseAction
 {
-    //TODO -> Para las animaciones
     public event EventHandler OnStartMoving;
     public event EventHandler OnStopMoving;
 
@@ -33,14 +32,12 @@ public class MoveAction : BaseAction
         {
             float moveSpeed = 4f;
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-            //TODO: Animacion andar
         }
         else
         {
+            OnStopMoving?.Invoke(this, EventArgs.Empty);
             isActive = false;
             onActionFinished();
-            //TODO: Parar animacion andar
         }
 
         float rotationSpeed = 10f;
@@ -54,6 +51,7 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(TilePosition tilePosition, Action onActionComplete)
     {
+        OnStartMoving?.Invoke(this, EventArgs.Empty);
         this.onActionFinished = onActionComplete;
         this.targetPos = LevelGrid.Instance.GetWorldPosition(tilePosition);
         isActive = true;
