@@ -163,7 +163,7 @@ public class ShootAction : BaseAction
         target = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
 
         state = State.Aiming;
-        float aimingTime = 1f;
+        float aimingTime = 0.5f;
         stateTimer = aimingTime;
 
         canShoot = true;
