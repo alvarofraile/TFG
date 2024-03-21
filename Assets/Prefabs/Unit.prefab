@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 7243897534097102429}
   - component: {fileID: 8746018800579272318}
   - component: {fileID: 3047436833150990754}
+  - component: {fileID: 5432170364481410597}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -223,6 +224,20 @@ MonoBehaviour:
   actionCost: 3
   maxShootDistance: 5
   damageAmount: 30
+--- !u!114 &5432170364481410597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125172971207804515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10f8e80b5e427874b988c79a6314e2a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionCost: 5
+  healAmount: 50
 --- !u!1 &6249846764712494699
 GameObject:
   m_ObjectHideFlags: 0

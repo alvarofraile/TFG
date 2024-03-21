@@ -34,6 +34,17 @@ public class UnitHealth : MonoBehaviour
         }
     }
 
+    public void Heal(int amount)
+    {
+        health += amount;
+
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+
+    }
+
     private void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);

@@ -131,6 +131,11 @@ public class Unit : MonoBehaviour
         unitHealth.Damage(damageAmount);
     }
 
+    public void Heal(int healAmount)
+    {
+        unitHealth.Heal(healAmount);
+    }
+
     public float GetHealthNormalized()
     {
         return unitHealth.GetHealthNormalized();

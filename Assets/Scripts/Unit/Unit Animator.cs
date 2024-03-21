@@ -22,6 +22,16 @@ public class UnitAnimator : MonoBehaviour
         {
             shootAction.OnShoot += shootAction_OnShoot;
         }
+
+        if (TryGetComponent<HealAction>(out HealAction healAction))
+        {
+            healAction.OnHeal += healAction_OnHeal;
+        }
+    }
+
+    private void healAction_OnHeal(object sender, EventArgs e)
+    {
+        animator.SetTrigger("heal");
     }
 
     private void moveAction_OnStartMoving(object sender, EventArgs e)
