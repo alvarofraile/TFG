@@ -27,6 +27,16 @@ public class UnitAnimator : MonoBehaviour
         {
             healAction.OnHeal += healAction_OnHeal;
         }
+
+        if (TryGetComponent<MeleeAction>(out MeleeAction meleeAction))
+        {
+            meleeAction.OnMeleeActionStarted += meleeAction_OnMeleeActionStarted;
+        }
+    }
+
+    private void meleeAction_OnMeleeActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("melee");
     }
 
     private void healAction_OnHeal(object sender, EventArgs e)

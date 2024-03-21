@@ -89,6 +89,13 @@ public class GridSystemVisualization : MonoBehaviour
                 tileVisualType = TileVisualType.Red;
                 ShowRange(unit.GetTilePosition(), shootAction.GetMaxShootingDistance(), TileVisualType.LightRed);
                 break;
+            case (HealAction healAction):
+                tileVisualType = TileVisualType.Green;
+                break;
+            case (MeleeAction meleeAction):
+                tileVisualType = TileVisualType.Red;
+                ShowRange(unit.GetTilePosition(), meleeAction.GetMaxMeleeDistance(), TileVisualType.LightRed);
+                break;
             default:
                 tileVisualType = TileVisualType.White;
                 break;

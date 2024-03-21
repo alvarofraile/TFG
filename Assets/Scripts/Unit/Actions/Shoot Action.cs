@@ -14,17 +14,17 @@ public class ShootAction : BaseAction
         public Unit shooterUnit;
     }
 
-    private enum State
+    private enum Phase
     {
         Aiming,
         Shooting,
         Ending
     }
 
-    private State state;
+    private Phase phase;
     [SerializeField] private int maxShootDistance = 5;
     [SerializeField] private int damageAmount = 30;
-    private float stateTimer;
+    private float phaseTimer;
     private Unit target;
     private bool canShoot;
 
@@ -35,30 +35,30 @@ public class ShootAction : BaseAction
             return;
         }
 
-        stateTimer -= Time.deltaTime;
+        phaseTimer -= Time.deltaTime;
 
-        switch(state)
+        switch(phase)
         {
-            case State.Aiming:
+            case Phase.Aiming:
                 Vector3 aimDirection = (target.GetWorldPosition() - unit.GetWorldPosition()).normalized;
                 float rotationSpeed = 10f;
                 transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * rotationSpeed);
                 break;
-            case State.Shooting:
+            case Phase.Shooting:
                 if (canShoot)
                 {
                     Shoot();
                     canShoot = false;
                 }
                 break;
-            case State.Ending:
+            case Phase.Ending:
                 ActionFinished();
                 break;
         }
 
-        if(stateTimer <= 0f)
+        if(phaseTimer <= 0f)
         {
-            NextState();
+            NextPhase();
         }
     }
 
@@ -79,21 +79,21 @@ public class ShootAction : BaseAction
         target.Damage(damageAmount);
     }
 
-    private void NextState()
+    private void NextPhase()
     {
-        switch (state)
+        switch (phase)
         {
-            case State.Aiming:
-                state = State.Shooting;
+            case Phase.Aiming:
+                phase = Phase.Shooting;
                 float shootingTime = 0.1f;
-                stateTimer = shootingTime;
+                phaseTimer = shootingTime;
                 break;
-            case State.Shooting:
-                state = State.Ending;
+            case Phase.Shooting:
+                phase = Phase.Ending;
                 float endTime = 0.5f;
-                stateTimer = endTime;
+                phaseTimer = endTime;
                 break;
-            case State.Ending:
+            case Phase.Ending:
                 isActive = false;
                 onActionFinished();
                 break;
@@ -162,9 +162,9 @@ public class ShootAction : BaseAction
     {
         target = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
 
-        state = State.Aiming;
+        phase = Phase.Aiming;
         float aimingTime = 0.5f;
-        stateTimer = aimingTime;
+        phaseTimer = aimingTime;
 
         canShoot = true;
 
