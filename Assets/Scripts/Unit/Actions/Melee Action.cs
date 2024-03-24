@@ -125,4 +125,13 @@ public class MeleeAction : BaseAction
     {
         return MAX_MELEE_ACTION_RANGE;
     }
+
+    public override EnemyAIAction GetEnemyAIAction(TilePosition tilePosition)
+    {
+        return new EnemyAIAction
+        {
+            tilePosition = tilePosition,
+            actionScore = 200,
+        };
+    }
 }

@@ -93,4 +93,15 @@ public class MoveAction : BaseAction
 
         return validTilePositionList;
     }
+
+    public override EnemyAIAction GetEnemyAIAction(TilePosition tilePosition)
+    {
+        int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+
+        return new EnemyAIAction
+        {
+            tilePosition = tilePosition,
+            actionScore = targetCountAtGridPosition * 10,
+        };
+    }
 }

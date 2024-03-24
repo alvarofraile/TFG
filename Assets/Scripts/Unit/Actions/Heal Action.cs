@@ -49,4 +49,12 @@ public class HealAction : BaseAction
         ActionStart(onActionComplete);
     }
 
+    public override EnemyAIAction GetEnemyAIAction(TilePosition tilePosition)
+    {
+        return new EnemyAIAction
+        {
+            tilePosition = tilePosition,
+            actionScore = 50 + Mathf.RoundToInt((1 - unit.GetHealthNormalized()) * 100f),
+        };
+    }
 }

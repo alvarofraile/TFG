@@ -56,4 +56,32 @@ public abstract class BaseAction : MonoBehaviour
 
         OnAnyActionFinished?.Invoke(this, EventArgs.Empty);
     }
+
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActions = new List<EnemyAIAction>();
+
+        List<TilePosition> validActionTilePositions = GetValidTilePositions();
+
+        foreach (TilePosition tilePositions in validActionTilePositions)
+        {
+            EnemyAIAction enemyAIAction = GetEnemyAIAction(tilePositions);
+            enemyAIActions.Add(enemyAIAction);
+        }
+
+        if (enemyAIActions.Count > 0)
+        {
+            enemyAIActions.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionScore - a.actionScore);
+
+            return enemyAIActions[0];
+        }
+        else
+        {
+            //No possible enemy AI actions
+            return null;
+        }
+
+    }
+
+    public abstract EnemyAIAction GetEnemyAIAction(TilePosition tilePosition);
 }

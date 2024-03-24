@@ -113,16 +113,20 @@ public class ShootAction : BaseAction
 
     public override List<TilePosition> GetValidTilePositions()
     {
-        List<TilePosition> validTilePositions = new List<TilePosition>();
-
         TilePosition unitTilePosition = unit.GetTilePosition();
+        return GetValidTilePositions(unitTilePosition);
+    }
+
+    public List<TilePosition> GetValidTilePositions(TilePosition originTilePosition)
+    {
+        List<TilePosition> validTilePositions = new List<TilePosition>();
 
         for (int x = -maxShootDistance; x <= maxShootDistance; x++)
         {
             for (int z = -maxShootDistance; z <= maxShootDistance; z++)
             {
                 TilePosition offset = new TilePosition(x, z);
-                TilePosition tilePosition = unitTilePosition + offset;
+                TilePosition tilePosition = originTilePosition + offset;
 
                 if (!LevelGrid.Instance.IsValidTilePosition(tilePosition))
                 {
@@ -169,5 +173,21 @@ public class ShootAction : BaseAction
         canShoot = true;
 
         ActionStart(onActionComplete);
+    }
+
+    public override EnemyAIAction GetEnemyAIAction(TilePosition tilePosition)
+    {
+        Unit targetUnit = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
+
+        return new EnemyAIAction
+        {
+            tilePosition = tilePosition,
+            actionScore = 100 + Mathf.RoundToInt((1 - targetUnit.GetHealthNormalized()) * 100f),
+        };
+    }
+
+    public int GetTargetCountAtTilePosition(TilePosition tilePosition)
+    {
+        return GetValidTilePositions(tilePosition).Count;
     }
 }

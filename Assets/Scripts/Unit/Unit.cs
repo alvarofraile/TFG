@@ -146,4 +146,17 @@ public class Unit : MonoBehaviour
         //TODO -> Muerte
         throw new NotImplementedException();
     }
+
+    public T GetAction<T>() where T : BaseAction
+    {
+        foreach (BaseAction baseAction in baseActions)
+        {
+            if (baseAction is T)
+            {
+                return baseAction as T;
+            }
+        }
+
+        return null;
+    }
 }
