@@ -143,8 +143,10 @@ public class Unit : MonoBehaviour
 
     private void UnitHealt_OnDead(object sender, EventArgs e)
     {
-        //TODO -> Muerte
-        throw new NotImplementedException();
+        LevelGrid.Instance.RemoveUnitFromTilePosition(tilePosition, this);
+        Destroy(gameObject);
+
+        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
     }
 
     public T GetAction<T>() where T : BaseAction

@@ -46,6 +46,8 @@ public abstract class BaseAction : MonoBehaviour
         isActive = true;
         this.onActionFinished = OnActionComplete;
 
+        GameActionLogger.Instance.LogAction(GetActionName());
+
         OnAnyActionStarted?.Invoke(this, EventArgs.Empty);
     }
 

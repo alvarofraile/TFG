@@ -36,13 +36,6 @@ public class UnitController : MonoBehaviour
         Unit.OnAnyUnitSpawned += Unit_OnAnyUnitSpawned;
     }
 
-    private void Update()
-    {
-        if(Input.GetKeyUp(KeyCode.T)) {
-            Debug.Log(allUnits.Count);
-        }
-    }
-
     private void Unit_OnAnyUnitSpawned(object sender, EventArgs e)
     {
         Unit unit = sender as Unit;
