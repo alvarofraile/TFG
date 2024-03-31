@@ -5,11 +5,11 @@ using UnityEngine;
 public class Tile
 {
 
-    private GridSystem gridSystem;
+    private GridSystem<Tile> gridSystem;
     private TilePosition tilePosition;
     private List<Unit> units;
 
-    public Tile(GridSystem gridSystem, TilePosition tilePosition)
+    public Tile(GridSystem<Tile> gridSystem, TilePosition tilePosition)
     {
         this.gridSystem = gridSystem;
         this.tilePosition = tilePosition;
@@ -20,12 +20,10 @@ public class Tile
     {
         string unitsString = "Units on tile: \n";
 
-        /*
         foreach (Unit unit in units) 
         { 
             unitsString += unit.ToString() + "\n";
         }
-        */
 
         return tilePosition.ToString() + "\n" + unitsString;
     }

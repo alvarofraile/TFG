@@ -58,7 +58,7 @@ public class GridSystemVisualization : MonoBehaviour
                 TilePosition tilePosition = new TilePosition(x, z);
 
                 Transform tileVisualTransform = 
-                    Instantiate(TileVisualPrefab, LevelGrid.Instance.GetWorldPosition(tilePosition), Quaternion.identity);
+                    Instantiate(TileVisualPrefab, LevelGrid.Instance.GetWorldPosition(tilePosition), Quaternion.identity, this.transform);
 
                 tileVisualArray[x, z] = tileVisualTransform.GetComponent<TileVisual>();
             }
@@ -81,7 +81,7 @@ public class GridSystemVisualization : MonoBehaviour
 
         switch(selectedAction)
         {
-            //TODO: Añadir todas las acciones
+            //TODO: Aï¿½adir todas las acciones
             case (MoveAction moveAction):
                 tileVisualType = TileVisualType.White;
                 break;
@@ -105,7 +105,7 @@ public class GridSystemVisualization : MonoBehaviour
 
     }
 
-    private void HideAllTileVisuals()
+    public void HideAllTileVisuals()
     {
         for (int x = 0; x < LevelGrid.Instance.GetWidth(); x++)
         {
@@ -166,7 +166,7 @@ public class GridSystemVisualization : MonoBehaviour
         ShowList(tilePositionList, tileVisualType);
     }
 
-    private void ShowList(List<TilePosition> tilePositions, TileVisualType tileVisualType)
+    public void ShowList(List<TilePosition> tilePositions, TileVisualType tileVisualType)
     {
         foreach(TilePosition tilePosition in tilePositions)
         {

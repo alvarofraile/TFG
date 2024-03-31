@@ -2,25 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using System;
 
-public class GridSystem
+public class GridSystem<TTile>
 {
 
     private int width;
     private int height;
     private float tileSize;
-    private Tile[,] tileArray;
+    private TTile[,] tileArray;
 
 
-    public GridSystem(int width, int height, float tileSize) 
+    public GridSystem(int width, int height, float tileSize, Func<GridSystem<TTile>, TilePosition, TTile> createTile) 
     { 
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
 
-        tileArray = new Tile[width, height];
+        tileArray = new TTile[width, height];
 
-        InitializeTileArray();
+        InitializeTileArray(createTile);
     }
 
     public int GetWidth()
@@ -33,14 +34,14 @@ public class GridSystem
         return height;
     }
 
-    private void InitializeTileArray()
+    private void InitializeTileArray(Func<GridSystem<TTile>, TilePosition, TTile> createTile)
     {
         for(int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
                 TilePosition tilePosition = new TilePosition(i, j);
-                tileArray[i, j] = new Tile(this, tilePosition);
+                tileArray[i, j] = createTile(this, tilePosition);
             }
         }
     }
@@ -58,12 +59,12 @@ public class GridSystem
             );
     }
 
-    public Tile GetTile(TilePosition tilePosition)
+    public TTile GetTile(TilePosition tilePosition)
     {
         return tileArray[tilePosition.x, tilePosition.z];
     }
 
-    public Tile GetTile(Vector3 worldPosition)
+    public TTile GetTile(Vector3 worldPosition)
     {
         TilePosition tilePosition = GetTilePosition(worldPosition);
         return tileArray[tilePosition.x, tilePosition.z];
@@ -77,7 +78,7 @@ public class GridSystem
                 tilePosition.z < height;
     }
 
-    public void showDebugVisuals(Transform tileDebugVisualPrefab) 
+    public void ShowDebugVisuals(Transform tileDebugVisualPrefab) 
     { 
         for (int i = 0; i < width; i++)
         {
@@ -86,7 +87,7 @@ public class GridSystem
                 TilePosition tilePosition = new TilePosition(i, j);
 
                 Transform tileDebugVisual = GameObject.Instantiate(tileDebugVisualPrefab, GetWorldPosition(tilePosition), Quaternion.identity, LevelGrid.Instance.transform);
-                TileDebugVisualization gridDebugObject = tileDebugVisual.GetComponent<TileDebugVisualization>();
+                TileDebugVisual gridDebugObject = tileDebugVisual.GetComponent<TileDebugVisual>();
                 gridDebugObject.SetTile(GetTile(tilePosition));
             }
         }

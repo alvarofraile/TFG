@@ -9,13 +9,8 @@ public class MoveAction : BaseAction
 
     [SerializeField] private int maxMoveDistance = 4;
 
-    private Vector3 targetPos;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        targetPos = transform.position;
-    }
+    private List<Vector3> worldPositions;
+    private int currentPositionIndex;
 
     private void Update()
     {
@@ -24,6 +19,7 @@ public class MoveAction : BaseAction
             return;
         }
 
+        Vector3 targetPos = worldPositions[currentPositionIndex];
         Vector3 moveDirection = (targetPos - transform.position).normalized;
 
         float stoppingDistance = 0.1f;
@@ -35,9 +31,12 @@ public class MoveAction : BaseAction
         }
         else
         {
-            OnStopMoving?.Invoke(this, EventArgs.Empty);
-            isActive = false;
-            onActionFinished();
+            currentPositionIndex++;
+            if(currentPositionIndex >= worldPositions.Count){
+                OnStopMoving?.Invoke(this, EventArgs.Empty);
+                isActive = false;
+                onActionFinished();
+            }
         }
 
         float rotationSpeed = 10f;
@@ -51,10 +50,21 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(TilePosition tilePosition, Action onActionComplete)
     {
+        List<TilePosition> pathTilePositions = Pathfinding.Instance.FindPath(unit.GetTilePosition(), tilePosition, out int pathLenght);
+        if(Pathfinding.Instance.GetShowDebugVisuals()){
+            //TODO -> Mostrar Ruta con colores
+            GridSystemVisualization.Instance.HideAllTileVisuals();
+            GridSystemVisualization.Instance.ShowList(pathTilePositions, GridSystemVisualization.TileVisualType.Green);
+        }
+        currentPositionIndex = 0;
+        worldPositions = new List<Vector3>();
+
+        foreach(TilePosition pathTilePosition in pathTilePositions){
+            worldPositions.Add(LevelGrid.Instance.GetWorldPosition(pathTilePosition));
+        }
+
         OnStartMoving?.Invoke(this, EventArgs.Empty);
-        this.onActionFinished = onActionComplete;
-        this.targetPos = LevelGrid.Instance.GetWorldPosition(tilePosition);
-        isActive = true;
+        ActionStart(onActionComplete);
     }
 
     public override List<TilePosition> GetValidTilePositions()
@@ -86,6 +96,24 @@ public class MoveAction : BaseAction
                     //Tile Position already occupied by another Unit
                     continue;
                 }
+                
+                if (!Pathfinding.Instance.IsWalkableGridPosition(testTilePosition))
+                {
+                    continue;
+                }
+                
+                if (!Pathfinding.Instance.HasPath(unitTilePosition, testTilePosition))
+                {
+                    continue;
+                }
+
+                int pathFindingDistanceMultiplier = 10;
+                if (Pathfinding.Instance.GetPathLenght(unitTilePosition, testTilePosition) > maxMoveDistance * pathFindingDistanceMultiplier)
+                {
+                    //Path lenght is too long
+                    continue;
+                }
+
 
                 validTilePositionList.Add(testTilePosition);
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelGrid : MonoBehaviour
@@ -15,7 +16,7 @@ public class LevelGrid : MonoBehaviour
     [SerializeField] private float tileSize;
     [SerializeField] private bool debugVisualization;
 
-    private GridSystem gridSystem;
+    private GridSystem<Tile> gridSystem;
     [SerializeField] private Transform tileDebugVisualPrefab;
 
     private void Awake()
@@ -28,12 +29,17 @@ public class LevelGrid : MonoBehaviour
         }
         Instance = this;
 
-        gridSystem = new GridSystem(width, height, tileSize);
+        gridSystem = new GridSystem<Tile>(width, height, tileSize,
+            (GridSystem<Tile> g, TilePosition tilePosition) => new Tile(g, tilePosition));
 
         if(debugVisualization)
         {
-            gridSystem.showDebugVisuals(tileDebugVisualPrefab);
+            gridSystem.ShowDebugVisuals(tileDebugVisualPrefab);
         }
+    }
+
+    private void Start(){
+        Pathfinding.Instance.Setup(width, height, tileSize);
     }
 
     public int GetWidth()
@@ -46,7 +52,7 @@ public class LevelGrid : MonoBehaviour
         return height;
     }
 
-    public GridSystem GetGridSystem()
+    public GridSystem<Tile> GetGridSystem()
     {
         //TODO: DELETE THIS METHOD
         return gridSystem;

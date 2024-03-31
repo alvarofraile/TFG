@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 7401483622911235347}
   - component: {fileID: 7067202616513306744}
   m_Layer: 0
-  m_Name: TileDebugVisualization
+  m_Name: TileDebugVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,4 +216,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73b626e7688eb624f8cadf97c2c0f5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMeshPro: {fileID: 8699330379288635767}
+  positionText: {fileID: 8699330379288635767}

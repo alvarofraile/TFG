@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Testing : MonoBehaviour
 {
-    public GridSystem gridSystem;
 
-    private void Start()
+   private void Start()
     { 
     }
     // Update is called once per frame

@@ -24,6 +24,7 @@ public class ShootAction : BaseAction
     private Phase phase;
     [SerializeField] private int maxShootDistance = 5;
     [SerializeField] private int damageAmount = 30;
+    [SerializeField] private LayerMask obstacleLayer;
     private float phaseTimer;
     private Unit target;
     private bool canShoot;
@@ -141,7 +142,7 @@ public class ShootAction : BaseAction
 
                 if (!LevelGrid.Instance.HasUnitsOnTilePosition(tilePosition))
                 {
-                    //Casilla vacía
+                    //Casilla vacï¿½a
                     continue;
                 }
 
@@ -152,7 +153,12 @@ public class ShootAction : BaseAction
                     continue;
                 }
 
-                //TODO -> Comprobar Obstaculos
+                Vector3 shootingDirection = (target.GetWorldPosition() - unit.GetWorldPosition()).normalized;
+                float unitShootingHeight = 1.7f;
+                if(Physics.Raycast(unit.GetWorldPosition() + Vector3.up * unitShootingHeight, shootingDirection, Vector3.Distance(unit.GetWorldPosition(), targetUnit.GetWorldPosition()), obstacleLayer)){
+                    //Comprobar si hay obstaculos al disparar
+                    continue;
+                }
 
                 validTilePositions.Add(tilePosition);
 
