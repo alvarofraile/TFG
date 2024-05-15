@@ -134,4 +134,9 @@ public class MeleeAction : BaseAction
             actionScore = 200,
         };
     }
+    
+    public int GetDamageAmount()
+    {
+        return damage;
+    }
 }

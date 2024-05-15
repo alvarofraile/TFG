@@ -19,7 +19,7 @@ public class Pathfinding : MonoBehaviour
 
     private int width;
     private int height;
-    private float cellSize;
+    private float tileSize;
     private GridSystem<PathfindingTile> gridSystem;
 
     private void Awake()
@@ -108,7 +108,7 @@ public class Pathfinding : MonoBehaviour
                 int testGCost = currentTile.GetGCost() + CalculateDistance(currentTile.GetTilePosition(), neighbourTile.GetTilePosition());
 
                 if(testGCost < neighbourTile.GetGCost()){
-                    neighbourTile.SetCameFromPathNode(currentTile);
+                    neighbourTile.SetCameFromPathfindingTile(currentTile);
                     neighbourTile.SetGCost(testGCost);
                     neighbourTile.SetHCost(CalculateDistance(neighbourTile.GetTilePosition(), endTilePosition));
                     neighbourTile.CalculateFCost();

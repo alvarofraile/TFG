@@ -124,7 +124,7 @@ Transform:
   m_GameObject: {fileID: 2125172971207804515}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 0, z: 4}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -225,6 +225,9 @@ MonoBehaviour:
   actionCost: 3
   maxShootDistance: 5
   damageAmount: 30
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &5432170364481410597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,6 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionCost: 4
+  damage: 90
 --- !u!1 &6249846764712494699
 GameObject:
   m_ObjectHideFlags: 0

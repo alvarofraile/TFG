@@ -73,4 +73,11 @@ public class UnitController : MonoBehaviour
     public List<Unit> GetEnemyUnits() { return enemyUnits; }
 
     public List<Unit> GetFriendlyUnits() { return friendlyUnits; }
+
+    public void Clear()
+    {
+        allUnits = new List<Unit>();
+        friendlyUnits = new List<Unit>();
+        enemyUnits = new List<Unit>();
+    }
 }

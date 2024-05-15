@@ -6,6 +6,12 @@ using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
+    private enum PlayerType
+    {
+        Human,
+        Agent
+    }
+
 
     public static UnitActionSystem Instance
     {
@@ -17,11 +23,13 @@ public class UnitActionSystem : MonoBehaviour
     public event EventHandler<bool> OnBusyChanged;
     public event EventHandler OnActionStarted;
 
+    [SerializeField] private PlayerType playerType;
     [SerializeField] private Unit selectedUnit;
     [SerializeField] private LayerMask unitLayerMask;
 
     private BaseAction selectedAction;
     private bool isBusy;
+    private bool gameEnded = false;
 
     private void Awake()
     {
@@ -38,6 +46,14 @@ public class UnitActionSystem : MonoBehaviour
     void Start()
     {
         SetSelectedUnit(selectedUnit);
+
+        Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
+        GameManager.Instance.OnGameEnd += GameManager_OnGameEnd;
+    }
+
+    private void GameManager_OnGameEnd(object sender, GameManager.OnGameEndEventArgs e)
+    {
+        gameEnded = true;
     }
 
     void Update()
@@ -47,19 +63,33 @@ public class UnitActionSystem : MonoBehaviour
             return;
         }
 
-        //TODO: Comprobar si es el turno del jugador o del enemigo
-
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (!TurnSystem.Instance.IsPlayerTurn())
         {
             return;
         }
 
-        if (TryUnitSelection())
-        {
-            return;
-        }
 
-        HandleSelectedAction();
+        if(playerType == PlayerType.Human)
+        {
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            if (TryUnitSelection())
+            {
+                return;
+            }
+
+            HandleSelectedAction();
+        }
+        else if (playerType == PlayerType.Agent)
+        {
+            //TODO:Get Unit and Action to perform
+            HandleAgentAction();
+        }
+        
     }
 
     private void SetBusy()
@@ -69,7 +99,7 @@ public class UnitActionSystem : MonoBehaviour
         OnBusyChanged?.Invoke(this, isBusy);
     }
 
-    private void ClearBusy()
+    public void ClearBusy()
     {
         isBusy = false;
 
@@ -152,5 +182,38 @@ public class UnitActionSystem : MonoBehaviour
 
             OnActionStarted?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    public void InvokeOnActionStarted()
+    {
+        OnActionStarted?.Invoke(this, EventArgs.Empty);
+    }
+
+
+    private void HandleAgentAction()
+    {
+        Unit unit = UnitAgentController.Instance.GetAgent();
+        if(unit == null)
+        {
+            AgentSkipTurn();
+            return;
+        }
+
+        SetBusy();
+        unit.GetComponent<UnitAgent>().RequestDecision();
+        ClearBusy();
+    }
+
+    private void Unit_OnAnyUnitDead(object sender, EventArgs e)
+    {
+        if(sender as Unit == selectedUnit && UnitController.Instance.GetFriendlyUnits().Count > 0)
+        {
+            SetSelectedUnit(UnitController.Instance.GetFriendlyUnits()[0]);
+        }
+    }
+
+    private void AgentSkipTurn()
+    {
+        TurnSystem.Instance.NextTurn();
     }
 }

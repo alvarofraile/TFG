@@ -19,6 +19,11 @@ public class EnemyAI : MonoBehaviour
      * sería realizar esa acción. A partir de estas puntuaciones se decidirá que acción realizar.
      */
 
+    public static EnemyAI Instance
+    {
+        get; private set;
+    }
+
     private enum State
     {
         WaitingForTurn,
@@ -32,6 +37,15 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.LogError("There is already an EnemyAI: " + transform + " - " + Instance);
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
         state = State.WaitingForTurn;
     }
 
@@ -71,6 +85,11 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
+    }
+
+    public void ResetState()
+    {
+        state = State.WaitingForTurn;
     }
 
     private void SetStateTakingTurn()

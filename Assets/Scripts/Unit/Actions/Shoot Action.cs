@@ -153,7 +153,7 @@ public class ShootAction : BaseAction
                     continue;
                 }
 
-                Vector3 shootingDirection = (target.GetWorldPosition() - unit.GetWorldPosition()).normalized;
+                Vector3 shootingDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
                 float unitShootingHeight = 1.7f;
                 if(Physics.Raycast(unit.GetWorldPosition() + Vector3.up * unitShootingHeight, shootingDirection, Vector3.Distance(unit.GetWorldPosition(), targetUnit.GetWorldPosition()), obstacleLayer)){
                     //Comprobar si hay obstaculos al disparar
@@ -195,5 +195,14 @@ public class ShootAction : BaseAction
     public int GetTargetCountAtTilePosition(TilePosition tilePosition)
     {
         return GetValidTilePositions(tilePosition).Count;
+    }
+
+    public int GetMaximumRange()
+    {
+        return maxShootDistance;
+    }
+    public int GetDamageAmount()
+    {
+        return damageAmount;
     }
 }

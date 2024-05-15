@@ -54,4 +54,14 @@ public class UnitHealth : MonoBehaviour
     {
         return (float) health / maxHealth;
     }
+
+    public int GetRemainingHealth()
+    {
+        return health;
+    }
+
+    public bool IsLethalHit(int damageAmount)
+    {
+        return damageAmount >= health;
+    }
 }

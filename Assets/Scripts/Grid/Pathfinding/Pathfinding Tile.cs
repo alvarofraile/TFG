@@ -57,7 +57,7 @@ public class PathfindingTile
         cameFromPathfindingTile = null;
     }
 
-    public void SetCameFromPathNode(PathfindingTile pathfindingTile)
+    public void SetCameFromPathfindingTile(PathfindingTile pathfindingTile)
     {
         cameFromPathfindingTile = pathfindingTile;
     }

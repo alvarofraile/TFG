@@ -22,7 +22,7 @@ public class MoveAction : BaseAction
         Vector3 targetPos = worldPositions[currentPositionIndex];
         Vector3 moveDirection = (targetPos - transform.position).normalized;
 
-        float stoppingDistance = 0.1f;
+        float stoppingDistance = 0.5f;
 
         if(Vector3.Distance(targetPos, transform.position) > stoppingDistance)
         {
@@ -131,5 +131,55 @@ public class MoveAction : BaseAction
             tilePosition = tilePosition,
             actionScore = targetCountAtGridPosition * 10,
         };
+    }
+
+    public TilePosition GetBestDefensiveTile()
+    {
+        List<TilePosition> validTilePositions = GetValidTilePositions();
+
+        int bestDefensiveRating = int.MinValue;
+        TilePosition bestTilePosition = validTilePositions[0];
+
+        foreach(TilePosition tilePosition in validTilePositions)
+        {
+            int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+            int allyCountAtGridPosition = unit.GetNearbyAlliesCounInRange(4);
+
+            int defensiveRating = allyCountAtGridPosition - allyCountAtGridPosition;
+
+
+            if(defensiveRating > bestDefensiveRating)
+            {
+                bestTilePosition = tilePosition;
+                bestDefensiveRating = defensiveRating;
+            }
+        }
+
+        return bestTilePosition;
+    }
+
+    public TilePosition GetBestOffesinveTile()
+    {
+        List<TilePosition> validTilePositions = GetValidTilePositions();
+
+        int bestTargetCount = int.MinValue;
+        int bestAllyCount = int.MinValue;
+        TilePosition bestTilePosition = validTilePositions[0];
+
+        foreach (TilePosition tilePosition in validTilePositions)
+        {
+            int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+            int allyCountAtGridPosition = unit.GetNearbyAlliesCounInRange(4);
+
+            if (targetCountAtGridPosition > bestTargetCount || (targetCountAtGridPosition == bestTargetCount && bestAllyCount < allyCountAtGridPosition))
+            {
+                bestTilePosition = tilePosition;
+                bestTargetCount = targetCountAtGridPosition;
+                bestAllyCount = allyCountAtGridPosition;
+
+            }
+        }
+
+        return bestTilePosition;
     }
 }

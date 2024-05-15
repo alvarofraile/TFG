@@ -10,20 +10,20 @@ public class PathfindigDebugVisualization : TileDebugVisual
     [SerializeField] private TextMeshPro fCostText;
     [SerializeField] private SpriteRenderer isWalkableIndicator;
 
-    private PathfindingTile pathfindingNode;
+    private PathfindingTile pathfindingTile;
 
     public override void SetTile(object tile)
     {
         base.SetTile(tile);
-        pathfindingNode = (PathfindingTile)tile;
+        pathfindingTile = (PathfindingTile)tile;
     }
 
     protected override void Update()
     {
         base.Update();
-        gCostText.text = pathfindingNode.GetGCost().ToString();
-        hCostText.text = pathfindingNode.GetHCost().ToString();
-        fCostText.text = pathfindingNode.GetFCost().ToString();
-        isWalkableIndicator.color = pathfindingNode.IsWalkable() ? Color.green : Color.red;
+        gCostText.text = pathfindingTile.GetGCost().ToString();
+        hCostText.text = pathfindingTile.GetHCost().ToString();
+        fCostText.text = pathfindingTile.GetFCost().ToString();
+        isWalkableIndicator.color = pathfindingTile.IsWalkable() ? Color.green : Color.red;
     }
 }

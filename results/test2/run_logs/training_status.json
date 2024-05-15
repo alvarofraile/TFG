@@ -1,0 +1,29 @@
+{
+    "UnitAgent": {
+        "checkpoints": [
+            {
+                "steps": 0,
+                "file_path": "results\\test2\\UnitAgent\\UnitAgent-0.onnx",
+                "reward": null,
+                "creation_time": 1714900457.1921709,
+                "auxillary_file_paths": [
+                    "results\\test2\\UnitAgent\\UnitAgent-0.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 0,
+            "file_path": "results\\test2\\UnitAgent.onnx",
+            "reward": null,
+            "creation_time": 1714900457.1921709,
+            "auxillary_file_paths": [
+                "results\\test2\\UnitAgent\\UnitAgent-0.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.29.0",
+        "torch_version": "1.13.1+cpu"
+    }
+}
