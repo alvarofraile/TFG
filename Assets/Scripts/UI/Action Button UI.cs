@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class ActionButtonUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private TextMeshProUGUI actionNameText;
+    [SerializeField] private TextMeshProUGUI costText;
     [SerializeField] private Button button;
     [SerializeField] private GameObject selectedVisual;
 
@@ -15,7 +16,8 @@ public class ActionButtonUI : MonoBehaviour
     public void SetBaseAction(BaseAction baseAction)
     {
         this.baseAction = baseAction;
-        text.text = baseAction.GetActionName().ToUpper();
+        actionNameText.text = baseAction.GetActionName().ToUpper();
+        costText.text = baseAction.GetCost().ToString();
 
         button.onClick.AddListener(() =>
         {
