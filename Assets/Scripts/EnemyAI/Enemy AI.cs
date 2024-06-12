@@ -24,6 +24,13 @@ public class EnemyAI : MonoBehaviour
         get; private set;
     }
 
+    private enum PlayerType
+    {
+        Deterministic,
+        Agent
+    }
+
+
     private enum State
     {
         WaitingForTurn,
@@ -34,6 +41,8 @@ public class EnemyAI : MonoBehaviour
     private State state;
 
     private float timer;
+
+    [SerializeField] private PlayerType playerType = PlayerType.Agent;
 
     private void Awake()
     {

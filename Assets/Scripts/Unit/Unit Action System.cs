@@ -29,7 +29,6 @@ public class UnitActionSystem : MonoBehaviour
 
     private BaseAction selectedAction;
     private bool isBusy;
-    private bool gameEnded = false;
 
     private void Awake()
     {
@@ -48,12 +47,6 @@ public class UnitActionSystem : MonoBehaviour
         SetSelectedUnit(selectedUnit);
 
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
-        GameManager.Instance.OnGameEnd += GameManager_OnGameEnd;
-    }
-
-    private void GameManager_OnGameEnd(object sender, GameManager.OnGameEndEventArgs e)
-    {
-        gameEnded = true;
     }
 
     void Update()
@@ -189,7 +182,7 @@ public class UnitActionSystem : MonoBehaviour
         OnActionStarted?.Invoke(this, EventArgs.Empty);
     }
 
-
+    //TODO
     private void HandleAgentAction()
     {
         Unit unit = UnitAgentController.Instance.GetAgent();
@@ -212,6 +205,7 @@ public class UnitActionSystem : MonoBehaviour
         }
     }
 
+    //TODO
     private void AgentSkipTurn()
     {
         TurnSystem.Instance.NextTurn();

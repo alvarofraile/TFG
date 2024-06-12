@@ -74,6 +74,7 @@ public class UnitController : MonoBehaviour
 
     public List<Unit> GetFriendlyUnits() { return friendlyUnits; }
 
+    //TODO
     public void Clear()
     {
         allUnits = new List<Unit>();

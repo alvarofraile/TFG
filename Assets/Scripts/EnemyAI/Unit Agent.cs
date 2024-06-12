@@ -36,7 +36,7 @@ public class UnitAgent : Agent
 
         float closestEnemyDistance;
         float closestEnemyHealth;
-        Unit closestEnemy = unit.GetClosestEnemy();
+        Unit closestEnemy = unit.GetClosestEnemyAtTilePosition(unit.GetTilePosition());
         if(closestEnemy != null)
         {
             closestEnemyDistance = Vector3.Distance(this.unit.GetWorldPosition(), closestEnemy.GetWorldPosition());
@@ -76,7 +76,7 @@ public class UnitAgent : Agent
         {
             case 0:
                 //Dispara al enemigo mas cercano si esta en rango
-                float distance = Vector3.Distance(this.unit.GetWorldPosition(), this.unit.GetClosestEnemy().GetWorldPosition());
+                float distance = Vector3.Distance(unit.GetWorldPosition(), unit.GetClosestEnemyAtTilePosition(unit.GetTilePosition()).GetWorldPosition());
                 if (distance < unit.GetAction<ShootAction>().GetMaxShootingDistance())
                 {
                     unit.TakeAgentAction(UnitAgentActions.Shoot);

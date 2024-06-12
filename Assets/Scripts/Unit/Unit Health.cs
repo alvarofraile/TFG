@@ -60,6 +60,7 @@ public class UnitHealth : MonoBehaviour
         return health;
     }
 
+    //TODO
     public bool IsLethalHit(int damageAmount)
     {
         return damageAmount >= health;

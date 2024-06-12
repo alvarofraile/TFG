@@ -16,7 +16,6 @@ public class Unit : MonoBehaviour
     private UnitHealth unitHealth;
     private BaseAction[] baseActions;
     private int actionPoints;
-    private bool gameFinished = false;
 
     private void Awake()
     {
@@ -38,21 +37,8 @@ public class Unit : MonoBehaviour
     {
         unitHealth.OnDead += UnitHealt_OnDead;
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
-        GameManager.Instance.OnGameEnd += GameManager_OnGameEnd;
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void GameManager_OnGameEnd(object sender, GameManager.OnGameEndEventArgs e)
-    {
-        /*
-        UnitAgent agent = GetComponent<UnitAgent>();
-
-        if(agent != null)
-        {
-            AssignGameResultReward(e.gameResult, agent);
-        }
-        */
     }
 
     void Update()
@@ -148,15 +134,17 @@ public class Unit : MonoBehaviour
 
     private void UnitHealt_OnDead(object sender, EventArgs e)
     {
-        UnitAgent agent = GetComponent<UnitAgent>();
-        agent.AddReward(-500);
+        if(TryGetComponent<UnitAgent>(out UnitAgent agent))
+        {
+            agent.AddReward(-150);
 
-        string cumulativeReward = "Cumulative Reward = " + GetComponent<UnitAgent>().GetCumulativeReward().ToString();
-        print(cumulativeReward);
+            string cumulativeReward = "Cumulative Reward = " + agent.GetCumulativeReward().ToString();
+            print(cumulativeReward);
+        }
 
         LevelGrid.Instance.RemoveUnitFromTilePosition(tilePosition, this);
         OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject, 0.1f);
     }
 
     public T GetAction<T>() where T : BaseAction
@@ -172,6 +160,7 @@ public class Unit : MonoBehaviour
         return null;
     }
 
+//TODO
     public int GetNearbyAlliesCounInRange(int range)
     {
         int nearbyAllies = 0;
@@ -228,8 +217,8 @@ public class Unit : MonoBehaviour
     }
 
     //AGENT---------------------------------------------------------
-
-    public Unit GetClosestEnemy()
+//TODO
+    public Unit GetClosestEnemyAtTilePosition(TilePosition tilePosition)
     {
         List<Unit> enemyUnits = UnitController.Instance.GetEnemyUnits();
 
@@ -237,14 +226,15 @@ public class Unit : MonoBehaviour
         {
             return null;
         }
-        
+
+        Vector3 worldPos = LevelGrid.Instance.GetWorldPosition(tilePosition);
         Unit closestEnemy = enemyUnits[0];
 
-        float closestEnemyDistance = Vector3.Distance(GetWorldPosition(), closestEnemy.GetWorldPosition());
+        float closestEnemyDistance = Vector3.Distance(worldPos, closestEnemy.GetWorldPosition());
 
         foreach (Unit enemy in enemyUnits)
         {
-            float distance = Vector3.Distance(GetWorldPosition(), enemy.GetWorldPosition());
+            float distance = Vector3.Distance(worldPos, enemy.GetWorldPosition());
 
 
             if (distance < closestEnemyDistance)
@@ -256,7 +246,7 @@ public class Unit : MonoBehaviour
 
         return closestEnemy;
     }
-
+//TODO
     public void TakeAgentAction(UnitAgent.UnitAgentActions action)
     {
         Debug.Log(action);
@@ -269,7 +259,7 @@ public class Unit : MonoBehaviour
             {
             ShootAction shootAction = this.GetAction<ShootAction>();
 
-                Unit target = this.GetClosestEnemy();
+                Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
 
                 //Check that enemy is within shooting range
                 float distanceToTarget = Vector3.Distance(target.transform.position, GetWorldPosition());
@@ -288,7 +278,7 @@ public class Unit : MonoBehaviour
                 bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
                 int eliminationBonus = 200;
 
-                int reward = damageAmount + ((isLethalHit ? 1 : 0) * eliminationBonus);
+                int reward = damageAmount * 2 + ((isLethalHit ? 1 : 0) * eliminationBonus);
 
                 agent.AddReward(reward);
 
@@ -305,9 +295,11 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
-                    TilePosition targetTilePosition = tilePosition + new TilePosition(0, 2);
+                    moveAction.TakeAction(moveAction.GetBestOffesinveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
 
-                    moveAction.TakeAction(moveAction.GetBestOffesinveTile(), UnitActionSystem.Instance.ClearBusy);
+                    float reward = rating * 10;
+                    agent.AddReward(reward);
+
                     UnitActionSystem.Instance.InvokeOnActionStarted();
                     break;
                 }
@@ -319,9 +311,11 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
-                    TilePosition targetTilePosition = tilePosition + new TilePosition(0, -2);
+                    moveAction.TakeAction(moveAction.GetBestDefensiveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
 
-                    moveAction.TakeAction(moveAction.GetBestDefensiveTile(), UnitActionSystem.Instance.ClearBusy);
+                    float reward = rating * 10;
+                    agent.AddReward(reward);
+
                     UnitActionSystem.Instance.InvokeOnActionStarted();
                     break;
                 }
@@ -329,7 +323,7 @@ public class Unit : MonoBehaviour
                 {
                     MeleeAction meleeAction = this.GetAction<MeleeAction>();
 
-                    Unit target = this.GetClosestEnemy();
+                    Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
 
                     //Check that enemy is within melee range
                     float distanceToTarget = Vector3.Distance(target.transform.position, GetWorldPosition());
@@ -348,7 +342,7 @@ public class Unit : MonoBehaviour
                     bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
                     int eliminationBonus = 200;
 
-                    int reward = damageAmount + ((isLethalHit ? 1 : 0) * eliminationBonus);
+                    int reward = damageAmount * 2 + ((isLethalHit ? 1 : 0) * eliminationBonus);
 
                     agent.AddReward(reward);
 
@@ -370,7 +364,7 @@ public class Unit : MonoBehaviour
                 }
         }
     }
-
+//TODO
     private void AssignGameResultReward(GameManager.GameResults gameResult, UnitAgent agent)
     {
         switch (gameResult)

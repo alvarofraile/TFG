@@ -59,6 +59,7 @@ public abstract class BaseAction : MonoBehaviour
         OnAnyActionFinished?.Invoke(this, EventArgs.Empty);
     }
 
+    //TODO
     public EnemyAIAction GetBestEnemyAIAction()
     {
         List<EnemyAIAction> enemyAIActions = new List<EnemyAIAction>();
@@ -85,5 +86,6 @@ public abstract class BaseAction : MonoBehaviour
 
     }
 
+    //TODO
     public abstract EnemyAIAction GetEnemyAIAction(TilePosition tilePosition);
 }

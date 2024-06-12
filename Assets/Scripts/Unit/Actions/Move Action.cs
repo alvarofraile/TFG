@@ -133,11 +133,13 @@ public class MoveAction : BaseAction
         };
     }
 
-    public TilePosition GetBestDefensiveTile()
+    //TODO
+    public TilePosition GetBestDefensiveTile(out int rating)
     {
         List<TilePosition> validTilePositions = GetValidTilePositions();
 
         int bestDefensiveRating = int.MinValue;
+        float bestDistanceToClosestEnemy = float.MinValue;
         TilePosition bestTilePosition = validTilePositions[0];
 
         foreach(TilePosition tilePosition in validTilePositions)
@@ -145,40 +147,52 @@ public class MoveAction : BaseAction
             int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
             int allyCountAtGridPosition = unit.GetNearbyAlliesCounInRange(4);
 
-            int defensiveRating = allyCountAtGridPosition - allyCountAtGridPosition;
+            int defensiveRating = allyCountAtGridPosition - targetCountAtGridPosition;
 
+            float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(),
+                                                        unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
 
-            if(defensiveRating > bestDefensiveRating)
+            if (defensiveRating > bestDefensiveRating ||
+               (defensiveRating > bestDefensiveRating && bestDistanceToClosestEnemy < distanceToClosestEnemyAtTilePosition))
             {
                 bestTilePosition = tilePosition;
                 bestDefensiveRating = defensiveRating;
+                bestDistanceToClosestEnemy = distanceToClosestEnemyAtTilePosition;
             }
         }
 
+        rating = bestDefensiveRating;
         return bestTilePosition;
     }
 
-    public TilePosition GetBestOffesinveTile()
+    public TilePosition GetBestOffesinveTile(out int rating)
     {
         List<TilePosition> validTilePositions = GetValidTilePositions();
 
         int bestTargetCount = int.MinValue;
         int bestAllyCount = int.MinValue;
+        float bestDistanceToClosestEnemy = float.MaxValue;
         TilePosition bestTilePosition = validTilePositions[0];
 
         foreach (TilePosition tilePosition in validTilePositions)
         {
-            int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
-            int allyCountAtGridPosition = unit.GetNearbyAlliesCounInRange(4);
+            int targetCountAtTilePosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+            int allyCountAtTilePosition = unit.GetNearbyAlliesCounInRange(4);
+            float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(), 
+                                                         unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
 
-            if (targetCountAtGridPosition > bestTargetCount || (targetCountAtGridPosition == bestTargetCount && bestAllyCount < allyCountAtGridPosition))
+            if (targetCountAtTilePosition > bestTargetCount || 
+                (targetCountAtTilePosition == bestTargetCount && bestAllyCount < allyCountAtTilePosition) ||
+                (targetCountAtTilePosition == bestTargetCount && bestAllyCount == allyCountAtTilePosition && bestDistanceToClosestEnemy > distanceToClosestEnemyAtTilePosition))
             {
                 bestTilePosition = tilePosition;
-                bestTargetCount = targetCountAtGridPosition;
-                bestAllyCount = allyCountAtGridPosition;
-
+                bestTargetCount = targetCountAtTilePosition;
+                bestAllyCount = allyCountAtTilePosition;
+                bestDistanceToClosestEnemy = distanceToClosestEnemyAtTilePosition;
             }
         }
+
+        rating = (bestTargetCount - bestAllyCount);
 
         return bestTilePosition;
     }
