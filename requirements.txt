@@ -15,7 +15,7 @@ gym-notices==0.0.8
 gymnasium==0.28.1
 h5py==3.8.0
 idna==3.4
-importlib-metadata==4.4.0
+importlib-metadata==4.8.0
 jax-jumpy==1.0.0
 Markdown==3.4.4
 MarkupSafe==2.1.3
