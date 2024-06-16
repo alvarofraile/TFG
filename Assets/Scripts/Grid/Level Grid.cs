@@ -52,12 +52,6 @@ public class LevelGrid : MonoBehaviour
         return height;
     }
 
-    public GridSystem<Tile> GetGridSystem()
-    {
-        //TODO: DELETE THIS METHOD
-        return gridSystem;
-    }
-
     public void AddUnitToTilePosition(TilePosition tilePosition, Unit unit)
     {
         Tile tile = gridSystem.GetTile(tilePosition);

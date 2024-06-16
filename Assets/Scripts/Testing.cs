@@ -14,7 +14,7 @@ public class Testing : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P)) 
         {
             print("Captura tomada");
-            ScreenCapture.CaptureScreenshot("Ejemplo.png", 4);
+            ScreenCapture.CaptureScreenshot("Ejemplo.png", 2);
         }
     }
 }

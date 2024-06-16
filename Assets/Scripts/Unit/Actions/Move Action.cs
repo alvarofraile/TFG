@@ -8,6 +8,7 @@ public class MoveAction : BaseAction
     public event EventHandler OnStopMoving;
 
     [SerializeField] private int maxMoveDistance = 4;
+    [SerializeField] private bool visualization = false;
 
     private List<Vector3> worldPositions;
     private int currentPositionIndex;
@@ -61,6 +62,11 @@ public class MoveAction : BaseAction
 
         foreach(TilePosition pathTilePosition in pathTilePositions){
             worldPositions.Add(LevelGrid.Instance.GetWorldPosition(pathTilePosition));
+        }
+
+        if(visualization){
+            GridSystemVisualization.Instance.ShowList(pathTilePositions, GridSystemVisualization.TileVisualType.Green);
+            Time.timeScale = 0;
         }
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
