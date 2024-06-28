@@ -49,6 +49,6 @@ public class TurnSystem : MonoBehaviour
     {
         turnCounter = 1;
         isPlayerTurn = true;
-        OnTurnChanged?.Invoke(this, EventArgs.Empty);
+        OnTurnChanged?.Invoke(this, EventArgs.Empty); 
     }
 }

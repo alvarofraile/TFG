@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public event EventHandler<OnGameEndEventArgs> OnGameEnd;
 
     [SerializeField] private int turnLimit = 50;
+    [SerializeField] private bool logGame = false;
 
     public enum GameResults
     {
@@ -83,6 +84,10 @@ public class GameManager : MonoBehaviour
     private void EndGame(GameResults gameResult)
     {
         Debug.Log(gameResult);
+
+        if(logGame){
+            GameActionLogger.Instance.SaveLogToFile();
+        }
 
         EnemyAI.Instance.ResetState();
         

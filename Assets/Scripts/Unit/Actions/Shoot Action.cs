@@ -129,39 +129,13 @@ public class ShootAction : BaseAction
                 TilePosition offset = new TilePosition(x, z);
                 TilePosition tilePosition = originTilePosition + offset;
 
-                if (!LevelGrid.Instance.IsValidTilePosition(tilePosition))
+                if(IsValidTileForShootingAction(tilePosition, originTilePosition)){
+                    validTilePositions.Add(tilePosition);
+                }
+                else
                 {
                     continue;
                 }
-
-                float distance = new Vector2(Math.Abs(x), Math.Abs(z)).magnitude;
-                if (distance > maxShootDistance)
-                {
-                    continue;
-                }
-
-                if (!LevelGrid.Instance.HasUnitsOnTilePosition(tilePosition))
-                {
-                    //Casilla vac�a
-                    continue;
-                }
-
-                Unit targetUnit = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
-                if (targetUnit.IsEnemy() == unit.IsEnemy())
-                {
-                    //Ambas unidades en el mismo equipo
-                    continue;
-                }
-
-                Vector3 shootingDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-                float unitShootingHeight = 1.7f;
-                if(Physics.Raycast(unit.GetWorldPosition() + Vector3.up * unitShootingHeight, shootingDirection, Vector3.Distance(unit.GetWorldPosition(), targetUnit.GetWorldPosition()), obstacleLayer)){
-                    //Comprobar si hay obstaculos al disparar
-                    continue;
-                }
-
-                validTilePositions.Add(tilePosition);
-
             }
         }
 
@@ -204,5 +178,40 @@ public class ShootAction : BaseAction
     public int GetDamageAmount()
     {
         return damageAmount;
+    }
+
+    public bool IsValidTileForShootingAction(TilePosition tilePosition, TilePosition originTilePosition){
+        if (!LevelGrid.Instance.IsValidTilePosition(tilePosition))
+        {
+            return false;
+        }
+
+        TilePosition offset = originTilePosition - tilePosition;
+        float distance = new Vector2(Math.Abs(offset.x), Math.Abs(offset.z)).magnitude;
+        if (distance > maxShootDistance)
+        {
+            return false;
+        }
+
+        if (!LevelGrid.Instance.HasUnitsOnTilePosition(tilePosition))
+        {
+            return false;
+        }
+
+        Unit targetUnit = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
+        if (targetUnit.IsEnemy() == unit.IsEnemy())
+        {
+            //Ambas unidades en el mismo equipo
+            return false;
+        }
+
+        Vector3 shootingDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
+        float unitShootingHeight = 1.7f;
+        if(Physics.Raycast(unit.GetWorldPosition() + Vector3.up * unitShootingHeight, shootingDirection, Vector3.Distance(unit.GetWorldPosition(), targetUnit.GetWorldPosition()), obstacleLayer)){
+            //Comprobar si hay obstaculos al disparar
+            return false;
+        }
+
+        return true;
     }
 }

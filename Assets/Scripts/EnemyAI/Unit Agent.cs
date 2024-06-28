@@ -29,10 +29,13 @@ public class UnitAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        int gameBalance = GameManager.Instance.GetGameBalance();
+        int friendlyUnits = UnitController.Instance.GetFriendlyUnits().Count;
+        int enemyUnits = UnitController.Instance.GetEnemyUnits().Count;
+        int turnNumber = TurnSystem.Instance.GetTurnNumber();
         int targetsInShootingRange = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(unit.GetTilePosition());
         int nearbyAllies = unit.GetNearbyAlliesCounInRange(4);
         float health = unit.GetHealthNormalized();
+        int availableActionPoints = unit.GetActionPoints();
 
         float closestEnemyDistance;
         float closestEnemyHealth;
@@ -44,15 +47,19 @@ public class UnitAgent : Agent
         }
         else
         {
+            //En estos casos la partida debería haber acabado
             closestEnemyDistance = 0;
             closestEnemyHealth = 0;
         }
 
 
-        sensor.AddObservation(gameBalance);
+        sensor.AddObservation(friendlyUnits);
+        sensor.AddObservation(enemyUnits);
+        sensor.AddObservation(turnNumber);
         sensor.AddObservation(targetsInShootingRange);
         sensor.AddObservation(nearbyAllies);
         sensor.AddObservation(health);
+        sensor.AddObservation(availableActionPoints);
         sensor.AddObservation(closestEnemyDistance);
         sensor.AddObservation(closestEnemyHealth);
     }
@@ -76,11 +83,7 @@ public class UnitAgent : Agent
         {
             case 0:
                 //Dispara al enemigo mas cercano si esta en rango
-                float distance = Vector3.Distance(unit.GetWorldPosition(), unit.GetClosestEnemyAtTilePosition(unit.GetTilePosition()).GetWorldPosition());
-                if (distance < unit.GetAction<ShootAction>().GetMaxShootingDistance())
-                {
-                    unit.TakeAgentAction(UnitAgentActions.Shoot);
-                }
+                unit.TakeAgentAction(UnitAgentActions.Shoot);
                 break;
             case 1:
                 unit.TakeAgentAction(UnitAgentActions.MoveOffense);
@@ -99,7 +102,7 @@ public class UnitAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        print("Episode");
+        print("Episode Begin");
         unit = gameObject.GetComponent<Unit>();
     }
 }

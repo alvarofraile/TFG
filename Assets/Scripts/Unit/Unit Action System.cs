@@ -85,7 +85,7 @@ public class UnitActionSystem : MonoBehaviour
         
     }
 
-    private void SetBusy()
+    public void SetBusy()
     {
         isBusy = true;
 

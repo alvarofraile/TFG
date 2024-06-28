@@ -115,6 +115,11 @@ public class Unit : MonoBehaviour
     public void Damage(int damageAmount)
     {
         unitHealth.Damage(damageAmount);
+
+        if(TryGetComponent<UnitAgent>(out UnitAgent agent))
+        {
+            agent.AddReward(-damageAmount);
+        }
     }
 
     public void Heal(int healAmount)
@@ -136,7 +141,7 @@ public class Unit : MonoBehaviour
     {
         if(TryGetComponent<UnitAgent>(out UnitAgent agent))
         {
-            agent.AddReward(-150);
+            agent.AddReward(-100);
 
             string cumulativeReward = "Cumulative Reward = " + agent.GetCumulativeReward().ToString();
             print(cumulativeReward);
@@ -256,36 +261,27 @@ public class Unit : MonoBehaviour
         switch (action)
         {
             case UnitAgent.UnitAgentActions.Shoot:
-            {
-            ShootAction shootAction = this.GetAction<ShootAction>();
-
-                Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
-
-                //Check that enemy is within shooting range
-                float distanceToTarget = Vector3.Distance(target.transform.position, GetWorldPosition());
-                if (distanceToTarget > shootAction.GetMaximumRange())
                 {
-                    return;
-                }
+                    ShootAction shootAction = this.GetAction<ShootAction>();
 
-                if (!this.TryUseActionPointsToTakeAction(shootAction))
-                {
-                    return;
-                }
+                    Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
 
-                //Reward
-                int damageAmount = Mathf.Min(shootAction.GetDamageAmount(), target.GetRemainingHealth());
-                bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
-                int eliminationBonus = 200;
+                    if(shootAction.IsValidTileForShootingAction(target.GetTilePosition(), this.GetTilePosition()) & this.TryUseActionPointsToTakeAction(shootAction)){
+                        //Valid Tile Position for Shooting -> Execute Action & Reward
+                        int damageAmount = Mathf.Min(shootAction.GetDamageAmount(), target.GetRemainingHealth());
+                        bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
+                        int eliminationBonus = 300;
 
-                int reward = damageAmount * 2 + ((isLethalHit ? 1 : 0) * eliminationBonus);
+                        int reward = damageAmount * 3 + ((isLethalHit ? 1 : 0) * eliminationBonus);
 
-                agent.AddReward(reward);
-
-                //Take Action
-                shootAction.TakeAction(target.tilePosition, UnitActionSystem.Instance.ClearBusy);
-                UnitActionSystem.Instance.InvokeOnActionStarted();
-                break;
+                        agent.AddReward(reward);
+                        
+                        //Take Action
+                        UnitActionSystem.Instance.SetBusy();
+                        shootAction.TakeAction(target.tilePosition, UnitActionSystem.Instance.ClearBusy);
+                        UnitActionSystem.Instance.InvokeOnActionStarted();
+                    }
+                    break;
                 }
             case UnitAgent.UnitAgentActions.MoveOffense:
                 {
@@ -295,12 +291,13 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    UnitActionSystem.Instance.SetBusy();
                     moveAction.TakeAction(moveAction.GetBestOffesinveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
+                    UnitActionSystem.Instance.InvokeOnActionStarted();
 
                     float reward = rating * 10;
                     agent.AddReward(reward);
 
-                    UnitActionSystem.Instance.InvokeOnActionStarted();
                     break;
                 }
             case UnitAgent.UnitAgentActions.MoveDefense:
@@ -311,12 +308,13 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    UnitActionSystem.Instance.SetBusy();
                     moveAction.TakeAction(moveAction.GetBestDefensiveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
+                    UnitActionSystem.Instance.InvokeOnActionStarted();
 
                     float reward = rating * 10;
                     agent.AddReward(reward);
 
-                    UnitActionSystem.Instance.InvokeOnActionStarted();
                     break;
                 }
             case UnitAgent.UnitAgentActions.Melee:
@@ -327,27 +325,21 @@ public class Unit : MonoBehaviour
 
                     //Check that enemy is within melee range
                     float distanceToTarget = Vector3.Distance(target.transform.position, GetWorldPosition());
-                    if (distanceToTarget > meleeAction.GetMaxMeleeDistance())
+                    if (distanceToTarget > meleeAction.GetMaxMeleeDistance() | !this.TryUseActionPointsToTakeAction(meleeAction))
                     {
                         return;
                     }
 
-                    if (!this.TryUseActionPointsToTakeAction(meleeAction))
-                    {
-                        return;
-                    }
+                    //Take Action
+                    UnitActionSystem.Instance.SetBusy();
+                    meleeAction.TakeAction(target.tilePosition, UnitActionSystem.Instance.ClearBusy);
+                    UnitActionSystem.Instance.InvokeOnActionStarted();
 
                     //Reward
-                    int damageAmount = Mathf.Min(meleeAction.GetDamageAmount(), target.GetRemainingHealth());
-                    bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
-                    int eliminationBonus = 200;
-
-                    int reward = damageAmount * 2 + ((isLethalHit ? 1 : 0) * eliminationBonus);
+                    int reward = 600;
 
                     agent.AddReward(reward);
 
-                    meleeAction.TakeAction(target.tilePosition, UnitActionSystem.Instance.ClearBusy);
-                    UnitActionSystem.Instance.InvokeOnActionStarted();
                     break;
                 }
             case UnitAgent.UnitAgentActions.Heal:
@@ -358,33 +350,18 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    //Take Action
+                    UnitActionSystem.Instance.SetBusy();
                     healAction.TakeAction(tilePosition, UnitActionSystem.Instance.ClearBusy);
                     UnitActionSystem.Instance.InvokeOnActionStarted();
-                    break;
-                }
-        }
-    }
-//TODO
-    private void AssignGameResultReward(GameManager.GameResults gameResult, UnitAgent agent)
-    {
-        switch (gameResult)
-        {
-            case GameManager.GameResults.Draw:
-                {
-                    agent.AddReward(-1500);
-                    break;
-                }
-            case GameManager.GameResults.Loss:
-                {
-                    agent.AddReward(-5000);
-                    break;
-                }
-            case GameManager.GameResults.Win:
-                {
-                    agent.AddReward(5000);
-                    break;
-                }
 
+                    //Reward
+                    float reward = (1f - unitHealth.GetHealthNormalized()) * 100;
+
+                    agent.AddReward(reward);
+
+                    break;
+                }
         }
     }
 }

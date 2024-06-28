@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eae4050dd65efc4f86219ea33e4129c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxActionPoints: 2
+  maxActionPoints: 7
   isEnemy: 0
 --- !u!114 &7732083678581231915
 MonoBehaviour:
@@ -210,6 +210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionCost: 2
   maxMoveDistance: 4
+  visualization: 0
 --- !u!114 &3047436833150990754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f8e80b5e427874b988c79a6314e2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionCost: 5
+  actionCost: 4
   healAmount: 50
 --- !u!114 &7574684933470413581
 MonoBehaviour:
@@ -254,8 +255,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa6f44a0623f1545887b5d5855542ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionCost: 4
-  damage: 90
+  actionCost: 5
+  damage: 100
 --- !u!1 &6249846764712494699
 GameObject:
   m_ObjectHideFlags: 0

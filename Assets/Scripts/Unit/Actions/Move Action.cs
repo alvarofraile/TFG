@@ -130,12 +130,12 @@ public class MoveAction : BaseAction
 
     public override EnemyAIAction GetEnemyAIAction(TilePosition tilePosition)
     {
-        int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+        int targetCountAtTilePosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
 
         return new EnemyAIAction
         {
             tilePosition = tilePosition,
-            actionScore = targetCountAtGridPosition * 10,
+            actionScore = targetCountAtTilePosition * 10,
         };
     }
 
@@ -148,15 +148,22 @@ public class MoveAction : BaseAction
         float bestDistanceToClosestEnemy = float.MinValue;
         TilePosition bestTilePosition = validTilePositions[0];
 
+        //foreach(TilePosition tilePosition in validTilePositions){
+        //    print(LevelGrid.Instance.gridSystem.GetTile(tilePosition));
+        //}
+        //Time.timeScale = 0;
+
         foreach(TilePosition tilePosition in validTilePositions)
         {
-            int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
+            int targetCountAtTilePosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
             int allyCountAtGridPosition = unit.GetNearbyAlliesCounInRange(4);
 
-            int defensiveRating = allyCountAtGridPosition - targetCountAtGridPosition;
+            int defensiveRating = allyCountAtGridPosition - targetCountAtTilePosition;
 
-            float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(),
-                                                        unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
+            float distanceToClosestEnemyAtTilePosition = Pathfinding.Instance.GetPathLenght(unit.GetTilePosition(), 
+                                                                                    unit.GetClosestEnemyAtTilePosition(tilePosition).GetTilePosition());
+            //float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(),
+            //                                            unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
 
             if (defensiveRating > bestDefensiveRating ||
                (defensiveRating > bestDefensiveRating && bestDistanceToClosestEnemy < distanceToClosestEnemyAtTilePosition))
@@ -184,8 +191,11 @@ public class MoveAction : BaseAction
         {
             int targetCountAtTilePosition = unit.GetAction<ShootAction>().GetTargetCountAtTilePosition(tilePosition);
             int allyCountAtTilePosition = unit.GetNearbyAlliesCounInRange(4);
-            float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(), 
-                                                         unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
+
+            float distanceToClosestEnemyAtTilePosition = Pathfinding.Instance.GetPathLenght(unit.GetTilePosition(), 
+                                                                        unit.GetClosestEnemyAtTilePosition(tilePosition).GetTilePosition());
+            //float distanceToClosestEnemyAtTilePosition = Vector3.Distance(unit.GetWorldPosition(), 
+            //                                             unit.GetClosestEnemyAtTilePosition(tilePosition).GetWorldPosition());
 
             if (targetCountAtTilePosition > bestTargetCount || 
                 (targetCountAtTilePosition == bestTargetCount && bestAllyCount < allyCountAtTilePosition) ||

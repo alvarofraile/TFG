@@ -635,6 +635,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionCost: 2
   maxMoveDistance: 4
+  visualization: 0
 --- !u!114 &5916886357174153323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,7 +653,7 @@ MonoBehaviour:
   damageAmount: 30
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!114 &3972992751704103197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,7 +666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f8e80b5e427874b988c79a6314e2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionCost: 5
+  actionCost: 4
   healAmount: 50
 --- !u!114 &2749167296133469840
 MonoBehaviour:
@@ -679,8 +680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa6f44a0623f1545887b5d5855542ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionCost: 4
-  damage: 90
+  actionCost: 5
+  damage: 100
 --- !u!1 &7777484056672651934
 GameObject:
   m_ObjectHideFlags: 0

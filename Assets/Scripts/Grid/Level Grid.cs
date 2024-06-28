@@ -16,7 +16,7 @@ public class LevelGrid : MonoBehaviour
     [SerializeField] private float tileSize;
     [SerializeField] private bool debugVisualization;
 
-    private GridSystem<Tile> gridSystem;
+    public GridSystem<Tile> gridSystem;
     [SerializeField] private Transform tileDebugVisualPrefab;
 
     private void Awake()

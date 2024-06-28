@@ -34,7 +34,7 @@ public class UnitAgentController : MonoBehaviour
 
     private void GameManager_OnGameEnd(object sender, GameManager.OnGameEndEventArgs e)
     {
-        EndEpisode();
+        EndEpisode(e.gameResult);
     }
 
     public Unit GetAgent()
@@ -71,18 +71,27 @@ public class UnitAgentController : MonoBehaviour
         return availableUnits[randomUnitIndex];
     }
 
-    private void EndEpisode()
+    private void EndEpisode(GameManager.GameResults gameResult)
     {
         List<Unit> friendlyUnits = UnitController.Instance.GetFriendlyUnits();
 
         foreach (Unit unit in friendlyUnits)
         {
+            if(gameResult == GameManager.GameResults.Win){
+                unit.gameObject.GetComponent<UnitAgent>().AddReward(10000f);
+            }
+            else if(gameResult == GameManager.GameResults.Loss){
+                unit.gameObject.GetComponent<UnitAgent>().AddReward(-10000f);
+            }
+            else{
+                //Draw
+                unit.gameObject.GetComponent<UnitAgent>().AddReward(-2000f);
+            }
+
             string cumulativeReward = "Cumulative Reward = " + unit.gameObject.GetComponent<UnitAgent>().GetCumulativeReward().ToString();
             print(cumulativeReward);
-            unit.gameObject.GetComponent<UnitAgent>().EndEpisode();
+            //unit.gameObject.GetComponent<UnitAgent>().EndEpisode();
         }
-
-        //Academy.Instance.Dispose();
 
         ResetTrainingScenario();
     }
@@ -124,8 +133,6 @@ public class UnitAgentController : MonoBehaviour
 
         UnitController.Instance.Clear();
 
-        //TODO: Check if lists are empty or need to be emptied manually
-
         //Instantiate enemies and friendly units in their original locations
 
         foreach (Vector3 enemyPosition in enemyPositions)
@@ -136,13 +143,12 @@ public class UnitAgentController : MonoBehaviour
         foreach (Vector3 unitPosition in unitAgentPositions)
         {
             Transform a = Instantiate(unitAgentPrefab, unitPosition, Quaternion.identity);
-            if(a == null)
-            {
-                print("aaa");
-            }
         }
 
         //Reset turn
         TurnSystem.Instance.ResetTurn();
+
+        //Clear action system busy state
+        UnitActionSystem.Instance.ClearBusy();
     }
 }
