@@ -18,10 +18,10 @@ behaviors:
       num_layers: 4
     reward_signals:
       extrinsic:
-        gamma: 0.90
+        gamma: 0.98
         strength: 1.0
     max_steps: 5.0e7
     time_horizon: 64
     summary_freq: 1000
     checkpoint_interval: 5000
-    max_steps: 1000000
+    max_steps: 250000

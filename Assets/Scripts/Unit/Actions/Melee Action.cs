@@ -139,4 +139,35 @@ public class MeleeAction : BaseAction
     {
         return damage;
     }
+
+    public bool IsValidTileForMelee(TilePosition tilePosition, TilePosition originTilePosition){
+        if (!LevelGrid.Instance.IsValidTilePosition(tilePosition))
+        {
+            return false;
+        }
+
+        if (!LevelGrid.Instance.HasUnitsOnTilePosition(tilePosition))
+        {
+            //Tile Position is empty, no Unit
+            return false;
+        }
+
+        Unit targetUnit = LevelGrid.Instance.GetUnitAtTilePosition(tilePosition);
+
+        if (targetUnit.IsEnemy() == unit.IsEnemy())
+        {
+            //Both Units on the same "team"
+            return false;
+        }
+
+        if(Math.Abs(tilePosition.x - originTilePosition.x) > 1){
+            return false;
+        }
+
+        if(Math.Abs(tilePosition.z - originTilePosition.z) > 1){
+            return false;
+        }
+
+        return true;
+    }
 }

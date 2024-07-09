@@ -19,6 +19,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private int turnLimit = 50;
     [SerializeField] private bool logGame = false;
+    [SerializeField] private bool accelerateTime = false;
+    [SerializeField] private int timeMultiplier = 10;
+    [SerializeField] private bool limitGameNumber = false;
+    [SerializeField] private int maxGames = 500;
+
+    private int gameCounter = 0;
 
     public enum GameResults
     {
@@ -44,6 +50,10 @@ public class GameManager : MonoBehaviour
     {
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
+
+        if(accelerateTime){
+            Time.timeScale = timeMultiplier;
+        }
     }
 
     private void Unit_OnAnyUnitDead(object sender, EventArgs e)
@@ -83,10 +93,17 @@ public class GameManager : MonoBehaviour
 
     private void EndGame(GameResults gameResult)
     {
-        Debug.Log(gameResult);
+        gameCounter++;
+
+        Debug.Log("GAME RESULT: " + gameResult);
+        Debug.Log("GAME FINISHED");
 
         if(logGame){
             GameActionLogger.Instance.SaveLogToFile();
+        }
+
+        if(gameCounter >= maxGames & limitGameNumber){
+            Time.timeScale = 0;
         }
 
         EnemyAI.Instance.ResetState();
@@ -95,25 +112,5 @@ public class GameManager : MonoBehaviour
         {
             gameResult = gameResult
         });
-    }
-
-    public int GetGameBalance()
-    {
-        int friendlyUnits = UnitController.Instance.GetFriendlyUnits().Count;
-        int enemyUnits = UnitController.Instance.GetEnemyUnits().Count;
-
-
-        if(friendlyUnits > enemyUnits)
-        {
-            return 1;
-        }
-        else if(friendlyUnits < enemyUnits)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
     }
 }

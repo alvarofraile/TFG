@@ -17,9 +17,18 @@ public class EndGameUI : MonoBehaviour
 
     private void GameManager_OnGameEnd(object sender, GameManager.OnGameEndEventArgs e)
     {
+        StartCoroutine(ShowResult(e.gameResult.ToString(), 1.5f));
+    }
+
+    IEnumerator ShowResult(string message, float delay) {
         background.SetActive(true);
         text.gameObject.SetActive(true);
-        text.text = e.gameResult.ToString();
+        text.text = message;
+
+        yield return new WaitForSeconds(delay);
+
+        background.SetActive(false);
+        text.gameObject.SetActive(false);
     }
 
 }

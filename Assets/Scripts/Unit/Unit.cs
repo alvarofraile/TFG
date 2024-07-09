@@ -115,11 +115,6 @@ public class Unit : MonoBehaviour
     public void Damage(int damageAmount)
     {
         unitHealth.Damage(damageAmount);
-
-        if(TryGetComponent<UnitAgent>(out UnitAgent agent))
-        {
-            agent.AddReward(-damageAmount);
-        }
     }
 
     public void Heal(int healAmount)
@@ -254,8 +249,6 @@ public class Unit : MonoBehaviour
 //TODO
     public void TakeAgentAction(UnitAgent.UnitAgentActions action)
     {
-        Debug.Log(action);
-
         UnitAgent agent = GetComponent<UnitAgent>();
 
         switch (action)
@@ -267,12 +260,16 @@ public class Unit : MonoBehaviour
                     Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
 
                     if(shootAction.IsValidTileForShootingAction(target.GetTilePosition(), this.GetTilePosition()) & this.TryUseActionPointsToTakeAction(shootAction)){
+                        
+                        UnitActionSystem.Instance.SetSelectedAction(shootAction);   
+                        Debug.Log("ACTION SELECTED:" + action);
+                        
                         //Valid Tile Position for Shooting -> Execute Action & Reward
                         int damageAmount = Mathf.Min(shootAction.GetDamageAmount(), target.GetRemainingHealth());
                         bool isLethalHit = target.GetHealth().IsLethalHit(damageAmount);
                         int eliminationBonus = 300;
 
-                        int reward = damageAmount * 3 + ((isLethalHit ? 1 : 0) * eliminationBonus);
+                        int reward = ((isLethalHit ? 1 : 0) * eliminationBonus);
 
                         agent.AddReward(reward);
                         
@@ -291,12 +288,12 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    UnitActionSystem.Instance.SetSelectedAction(moveAction);   
+                    Debug.Log("ACTION SELECTED:" + action);
+
                     UnitActionSystem.Instance.SetBusy();
                     moveAction.TakeAction(moveAction.GetBestOffesinveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
                     UnitActionSystem.Instance.InvokeOnActionStarted();
-
-                    float reward = rating * 10;
-                    agent.AddReward(reward);
 
                     break;
                 }
@@ -308,12 +305,12 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    UnitActionSystem.Instance.SetSelectedAction(moveAction);
+                    Debug.Log("ACTION SELECTED:" + action);
+
                     UnitActionSystem.Instance.SetBusy();
                     moveAction.TakeAction(moveAction.GetBestDefensiveTile(out int rating), UnitActionSystem.Instance.ClearBusy);
                     UnitActionSystem.Instance.InvokeOnActionStarted();
-
-                    float reward = rating * 10;
-                    agent.AddReward(reward);
 
                     break;
                 }
@@ -324,11 +321,13 @@ public class Unit : MonoBehaviour
                     Unit target = this.GetClosestEnemyAtTilePosition(GetTilePosition());
 
                     //Check that enemy is within melee range
-                    float distanceToTarget = Vector3.Distance(target.transform.position, GetWorldPosition());
-                    if (distanceToTarget > meleeAction.GetMaxMeleeDistance() | !this.TryUseActionPointsToTakeAction(meleeAction))
+                    if (!meleeAction.IsValidTileForMelee(target.GetTilePosition(), this.GetTilePosition()) | !this.TryUseActionPointsToTakeAction(meleeAction))
                     {
                         return;
                     }
+
+                    UnitActionSystem.Instance.SetSelectedAction(meleeAction);
+                    Debug.Log("ACTION SELECTED:" + action);
 
                     //Take Action
                     UnitActionSystem.Instance.SetBusy();
@@ -336,7 +335,7 @@ public class Unit : MonoBehaviour
                     UnitActionSystem.Instance.InvokeOnActionStarted();
 
                     //Reward
-                    int reward = 600;
+                    int reward = 300;
 
                     agent.AddReward(reward);
 
@@ -350,15 +349,13 @@ public class Unit : MonoBehaviour
                         return;
                     }
 
+                    UnitActionSystem.Instance.SetSelectedAction(healAction);
+                    Debug.Log("ACTION SELECTED:" + action);
+
                     //Take Action
                     UnitActionSystem.Instance.SetBusy();
                     healAction.TakeAction(tilePosition, UnitActionSystem.Instance.ClearBusy);
                     UnitActionSystem.Instance.InvokeOnActionStarted();
-
-                    //Reward
-                    float reward = (1f - unitHealth.GetHealthNormalized()) * 100;
-
-                    agent.AddReward(reward);
 
                     break;
                 }

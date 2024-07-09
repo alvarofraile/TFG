@@ -192,6 +192,8 @@ public class UnitActionSystem : MonoBehaviour
             return;
         }
 
+        SetSelectedUnit(unit);
+
         SetBusy();
         unit.GetComponent<UnitAgent>().RequestDecision();
         ClearBusy();

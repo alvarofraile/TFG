@@ -23,7 +23,7 @@ public class MoveAction : BaseAction
         Vector3 targetPos = worldPositions[currentPositionIndex];
         Vector3 moveDirection = (targetPos - transform.position).normalized;
 
-        float stoppingDistance = 0.5f;
+        float stoppingDistance = 0.1f;
 
         if(Vector3.Distance(targetPos, transform.position) > stoppingDistance)
         {
