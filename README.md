@@ -18,7 +18,7 @@ Este sistema se ha puesto a prueba contra un sistema que emplea técnicas más t
 ## Memoria
 
 Se puede acceder a la memoria del proyecto a través del siguiente enlace: [TBD]
-## Tecnologías, herramientas lenguajes usados
+## Tecnologías, herramientas y lenguajes usados
 
 ![Unity](https://img.shields.io/badge/unity-%23000000.svg?style=for-the-badge&logo=unity&logoColor=white)
 
