@@ -17,7 +17,8 @@ Este sistema de inteligencia artificial está basado en técnicas de aprendizaje
 Este sistema se ha puesto a prueba contra un sistema que emplea técnicas más tradicionalmente usadas y menos complejas, que difieren del aprendizaje automático y solo generan la ilusión de inteligencia sin ser sistemas realmente inteligentes. En estas pruebas el sistema desarrollado ha demostrado un alto nivel de habilidad además de un comportamiento consistente y lógicamente coherente.
 ## Memoria
 
-Se puede acceder a la memoria del proyecto a través del siguiente enlace: [TBD]
+Se puede acceder a la memoria del proyecto a través del siguiente [enlace](https://oa.upm.es/83383/).
+
 ## Tecnologías, herramientas y lenguajes usados
 
 ![Unity](https://img.shields.io/badge/unity-%23000000.svg?style=for-the-badge&logo=unity&logoColor=white)
